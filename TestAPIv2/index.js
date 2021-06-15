@@ -23,7 +23,14 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to testAPIv2 application." });
 });
 
+const db = require("./app/config/db.config");
+db.sequelize.sync();
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
+
 require("./app/routes/employees.route")(app);
+require("./app/routes/department.route")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 3000;

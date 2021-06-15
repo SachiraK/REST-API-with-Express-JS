@@ -9,6 +9,9 @@ module.exports = (sequelize, Sequelize) => {
     nic: {
       type: Sequelize.STRING,
     },
+    departmentID: {
+      type: Sequelize.STRING,
+    },
   });
 
   return Employee;

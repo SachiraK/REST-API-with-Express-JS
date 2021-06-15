@@ -31,8 +31,14 @@ db.sequelize = sequelize;
 db.employees = EmployeesModel(sequelize, Sequelize);
 db.departments = DepartmentModel(sequelize, Sequelize);
 
-sequelize.sync({ force: false }).then(() => {
-  console.log(`Database & tables created here!`);
-});
+// db.departments.hasMany(db.employees, { as: "employees" });
+// db.employees.belongsTo(db.departments, {
+//   foreignKey: "departmentID",
+//   as: "departmenet",
+// });
+
+// sequelize.sync({ force: false }).then(() => {
+//   console.log(`Database & tables created here!`);
+// });
 
 module.exports = db;
