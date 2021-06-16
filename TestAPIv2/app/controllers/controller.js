@@ -23,7 +23,7 @@ exports.createEmployee = (req, res) => {
   //Register an Employee
   if (
     validate.isString(req.body.name) &&
-    validate.isString(req.body.department_id) &&
+    validate.isInteger(req.body.department_id) &&
     validate.isString(req.body.nic) &&
     req.body.nic.slice(-1).toLowerCase() === "v"
   ) {
@@ -32,7 +32,6 @@ exports.createEmployee = (req, res) => {
       name: req.body.name,
       department_id: req.body.department_id,
       nic: req.body.nic,
-      // department_id: req.body.department_id,
     };
 
     // Save Tutorial in the database
@@ -93,25 +92,10 @@ exports.createDepartment = (req, res) => {
 exports.findAllEmployee = (req, res) => {
   const name = req.query.name;
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-
-  // Employee.findAll({
-  //   include: ["employees"],
-  //   where: { condition },
-  // })
-  //   .then((data) => {
-  //     // res.send(data);
-  //     res.send({ data: data });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message:
-  //         err.message || "Some error occurred while retrieving Employees.",
-  //     });
-  //   });
   Employee.findAll({ where: condition })
     .then((data) => {
       // res.send(data);
-      res.send({ data: data });
+      res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -130,8 +114,7 @@ exports.findAllDepartment = (req, res) => {
     where: condition,
   })
     .then((data) => {
-      // res.send(data);
-      res.send({ data: data });
+      res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
@@ -139,18 +122,6 @@ exports.findAllDepartment = (req, res) => {
           err.message || "Some error occurred while retrieving Employees.",
       });
     });
-
-  // Department.findAll({ where: condition })
-  //   .then((data) => {
-  //     // res.send(data);
-  //     res.send({ data: data, include: ["employees"] });
-  //   })
-  //   .catch((err) => {
-  //     res.status(500).send({
-  //       message:
-  //         err.message || "Some error occurred while retrieving Department.",
-  //     });
-  //   });
 };
 
 exports.findOneEmployee = (req, res) => {
@@ -200,19 +171,26 @@ exports.findOneDepartment = (req, res) => {
 };
 
 exports.updateEmployee = (req, res) => {
-  // if (validate.isEmpty(req.params.id)) {
-  //   res.send({ message: "Enter the Employee ID you want to update" });
-  // } else {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
+    // if (
+    //   validate.isEmpty(req.body.name) ||
+    //   validate.isEmpty(req.body.department_id) ||
+    //   validate.isEmpty(req.body.nic)
+    // ) {
+    //   res.status(400).send({
+    //     message: "One or more field/fields is/are missing!",
+    //   });
+    //   return;
+    // }
     if (
       validate.isString(req.body.name) &&
-      validate.isString(req.body.departmentName) &&
+      validate.isInteger(req.body.department_id) &&
       validate.isString(req.body.nic) &&
       req.body.nic.slice(-1).toLowerCase() === "v"
     ) {
       Employee.update(req.body, {
-        where: { id: id },
+        where: { employees_id: id },
       })
         .then((num) => {
           if (num == 1) {
@@ -220,15 +198,10 @@ exports.updateEmployee = (req, res) => {
               message: "Employee details were updated successfully.",
             });
           }
-          // else {
-          //   res.send({
-          //     message: `Cannot update Employee with id=${id}. Maybe Employee was not found or req.body is empty!`,
-          //   });
-          // }
         })
         .catch((err) => {
           res.status(500).send({
-            message: "Error updating Employee with id=" + id,
+            message: "Error updating Employee with id=" + id + " " + err,
           });
         });
     } else {
@@ -236,16 +209,18 @@ exports.updateEmployee = (req, res) => {
     }
   } else {
     res.send({ message: "ID should be a Number!" });
-    // }
   }
 };
 
 exports.updateDepartment = (req, res) => {
-  // if (validate.isEmpty(req.params.id)) {
-  //   res.send({ message: "Enter the Employee ID you want to update" });
-  // } else {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
+    if (validate.isEmpty(req.body.departmentName)) {
+      res.status(400).send({
+        message: "One or more field/fields is/are missing!",
+      });
+      return;
+    }
     if (validate.isString(req.body.department)) {
       Department.update(req.body, {
         where: { id: id },
@@ -256,11 +231,6 @@ exports.updateDepartment = (req, res) => {
               message: "Department details were updated successfully.",
             });
           }
-          // else {
-          //   res.send({
-          //     message: `Cannot update Employee with id=${id}. Maybe Employee was not found or req.body is empty!`,
-          //   });
-          // }
         })
         .catch((err) => {
           res.status(500).send({
@@ -279,8 +249,9 @@ exports.updateDepartment = (req, res) => {
 exports.deleteEmployee = (req, res) => {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
+    console.log(req.params.id);
     Employee.destroy({
-      where: { id: id },
+      where: { employees_id: id },
     })
       .then((num) => {
         if (num == 1) {
@@ -295,7 +266,7 @@ exports.deleteEmployee = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message: "Could not delete Employee with id=" + id,
+          message: "Could not delete Employee with id=" + id + " " + err,
         });
       });
   } else {
