@@ -11,7 +11,7 @@ exports.createEmployee = (req, res) => {
   // Validate request
   if (
     validate.isEmpty(req.body.name) ||
-    validate.isEmpty(req.body.department) ||
+    validate.isEmpty(req.body.department_id) ||
     validate.isEmpty(req.body.nic)
   ) {
     res.status(400).send({
@@ -23,15 +23,16 @@ exports.createEmployee = (req, res) => {
   //Register an Employee
   if (
     validate.isString(req.body.name) &&
-    validate.isString(req.body.department) &&
+    validate.isString(req.body.department_id) &&
     validate.isString(req.body.nic) &&
     req.body.nic.slice(-1).toLowerCase() === "v"
   ) {
     const employee = {
+      employees_id: req.body.employees_id,
       name: req.body.name,
-      department: req.body.department,
+      department_id: req.body.department_id,
       nic: req.body.nic,
-      departmentID: req.body.departmentID,
+      // department_id: req.body.department_id,
     };
 
     // Save Tutorial in the database
@@ -56,11 +57,7 @@ exports.createEmployee = (req, res) => {
 
 exports.createDepartment = (req, res) => {
   // Validate request
-  if (
-    validate.isEmpty(req.body.name) ||
-    validate.isEmpty(req.body.department) ||
-    validate.isEmpty(req.body.nic)
-  ) {
+  if (validate.isEmpty(req.body.departmentName)) {
     res.status(400).send({
       message: "One or more field/fields is/are missing!",
     });
@@ -68,18 +65,13 @@ exports.createDepartment = (req, res) => {
   }
 
   //Register an Department
-  if (
-    validate.isString(req.body.name) &&
-    validate.isString(req.body.department) &&
-    validate.isString(req.body.nic) &&
-    req.body.nic.slice(-1).toLowerCase() === "v"
-  ) {
-    const departmenet = {
-      name: req.body.name,
+  if (validate.isString(req.body.departmentName)) {
+    const department = {
+      departmentName: req.body.departmentName,
     };
 
     // Save Tutorial in the database
-    Employee.create(departmenet)
+    Department.create(department)
       .then((data) => {
         res.send(data);
       })
@@ -102,9 +94,24 @@ exports.findAllEmployee = (req, res) => {
   const name = req.query.name;
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
+  // Employee.findAll({
+  //   include: ["employees"],
+  //   where: { condition },
+  // })
+  //   .then((data) => {
+  //     // res.send(data);
+  //     res.send({ data: data });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message:
+  //         err.message || "Some error occurred while retrieving Employees.",
+  //     });
+  //   });
   Employee.findAll({ where: condition })
     .then((data) => {
-      res.send(data);
+      // res.send(data);
+      res.send({ data: data });
     })
     .catch((err) => {
       res.status(500).send({
@@ -118,16 +125,32 @@ exports.findAllDepartment = (req, res) => {
   const name = req.query.name;
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Department.findAll({ where: condition })
+  Department.findAll({
+    include: ["employees"],
+    where: condition,
+  })
     .then((data) => {
-      res.send({ data: data, include: ["employees"] });
+      // res.send(data);
+      res.send({ data: data });
     })
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving Department.",
+          err.message || "Some error occurred while retrieving Employees.",
       });
     });
+
+  // Department.findAll({ where: condition })
+  //   .then((data) => {
+  //     // res.send(data);
+  //     res.send({ data: data, include: ["employees"] });
+  //   })
+  //   .catch((err) => {
+  //     res.status(500).send({
+  //       message:
+  //         err.message || "Some error occurred while retrieving Department.",
+  //     });
+  //   });
 };
 
 exports.findOneEmployee = (req, res) => {
@@ -184,7 +207,7 @@ exports.updateEmployee = (req, res) => {
     const id = req.params.id;
     if (
       validate.isString(req.body.name) &&
-      validate.isString(req.body.department) &&
+      validate.isString(req.body.departmentName) &&
       validate.isString(req.body.nic) &&
       req.body.nic.slice(-1).toLowerCase() === "v"
     ) {
@@ -223,12 +246,7 @@ exports.updateDepartment = (req, res) => {
   // } else {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
-    if (
-      validate.isString(req.body.name) &&
-      validate.isString(req.body.department) &&
-      validate.isString(req.body.nic) &&
-      req.body.nic.slice(-1).toLowerCase() === "v"
-    ) {
+    if (validate.isString(req.body.department)) {
       Department.update(req.body, {
         where: { id: id },
       })

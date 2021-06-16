@@ -14,15 +14,13 @@ const sequelize = new Sequelize(DATABASE_NAME, USER, PASSWORD, {
   operatorsAliases: false,
 
   pool: {
-    max: 5,
+    max: 10,
     min: 0,
     acquire: 30000,
     idle: 10000,
   },
 });
 
-// const employees = EmployeesModel(sequelize, Sequelize);
-// const department = DepartmentModel(sequelize, Sequelize);
 const db = {};
 
 db.Sequelize = Sequelize;
@@ -31,14 +29,14 @@ db.sequelize = sequelize;
 db.employees = EmployeesModel(sequelize, Sequelize);
 db.departments = DepartmentModel(sequelize, Sequelize);
 
-// db.departments.hasMany(db.employees, { as: "employees" });
-// db.employees.belongsTo(db.departments, {
-//   foreignKey: "departmentID",
-//   as: "departmenet",
-// });
-
-// sequelize.sync({ force: false }).then(() => {
-//   console.log(`Database & tables created here!`);
-// });
+db.departments.hasMany(db.employees, {
+  as: "employees",
+  foreignKey: "department_id",
+  sourceKey: "id",
+});
+db.employees.belongsTo(db.departments, {
+  foreignKey: "department_id",
+  targetKey: "id",
+});
 
 module.exports = db;
