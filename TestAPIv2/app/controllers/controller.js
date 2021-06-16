@@ -11,7 +11,6 @@ exports.createEmployee = (req, res) => {
   // Validate request
   if (
     validate.isEmpty(req.body.name) ||
-    validate.isEmpty(req.body.department) ||
     validate.isEmpty(req.body.nic)
   ) {
     res.status(400).send({
@@ -23,15 +22,13 @@ exports.createEmployee = (req, res) => {
   //Register an Employee
   if (
     validate.isString(req.body.name) &&
-    validate.isString(req.body.department) &&
     validate.isString(req.body.nic) &&
     req.body.nic.slice(-1).toLowerCase() === "v"
   ) {
     const employee = {
       name: req.body.name,
-      department: req.body.department,
+      department_id: req.body.department_id,
       nic: req.body.nic,
-      departmentID: req.body.departmentID,
     };
 
     // Save Tutorial in the database
@@ -56,30 +53,23 @@ exports.createEmployee = (req, res) => {
 
 exports.createDepartment = (req, res) => {
   // Validate request
-  if (
-    validate.isEmpty(req.body.name) ||
-    validate.isEmpty(req.body.department) ||
-    validate.isEmpty(req.body.nic)
-  ) {
+  if (validate.isEmpty(req.body.department_name)) {
     res.status(400).send({
       message: "One or more field/fields is/are missing!",
     });
     return;
   }
 
-  //Register an Department
+  //Register a Department
   if (
-    validate.isString(req.body.name) &&
-    validate.isString(req.body.department) &&
-    validate.isString(req.body.nic) &&
-    req.body.nic.slice(-1).toLowerCase() === "v"
+    validate.isString(req.body.department_name)
   ) {
-    const departmenet = {
-      name: req.body.name,
+    const department = {
+      department_name: req.body.department_name,
     };
 
     // Save Tutorial in the database
-    Employee.create(departmenet)
+    Department.create(department)
       .then((data) => {
         res.send(data);
       })
@@ -118,9 +108,11 @@ exports.findAllDepartment = (req, res) => {
   const name = req.query.name;
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  Department.findAll({ where: condition })
+  Department.findAll({ 
+    include:["employees"],
+    where: condition })
     .then((data) => {
-      res.send({ data: data, include: ["employees"] });
+      res.send({ data: data, });
     })
     .catch((err) => {
       res.status(500).send({
@@ -343,3 +335,5 @@ exports.deleteAllDepartment = (req, res) => {
       });
     });
 };
+
+
