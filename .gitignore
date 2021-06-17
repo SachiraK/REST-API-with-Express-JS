@@ -1,4 +1,4 @@
-#Ignore TwoTables
+#Ignore TwoTables and TestAPI folders
 TwoTables/
 TestAPI/
 
