@@ -92,7 +92,10 @@ exports.createDepartment = (req, res) => {
 exports.findAllEmployee = (req, res) => {
   const name = req.query.name;
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-  Employee.findAll({ where: condition })
+  Employee.findAll({
+    include: [{ model: Department, attributes: ["departmentName"] }],
+    where: condition,
+  })
     .then((data) => {
       // res.send(data);
       res.send(data);
