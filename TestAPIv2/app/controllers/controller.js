@@ -110,7 +110,7 @@ exports.findAllDepartment = (req, res) => {
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
   Department.findAll({
-    include: ["employees"],
+    // include: ["employees"],
     where: condition,
   })
     .then((data) => {
@@ -331,4 +331,76 @@ exports.deleteAllDepartment = (req, res) => {
           err.message || "Some error occurred while removing all Employees.",
       });
     });
+};
+
+exports.findEmployeeForDepartment = (req, res) => {
+  if (validate.isInteger(parseInt(req.params.id))) {
+    const id = req.params.id;
+
+    //     //OPTION 1
+    //     Department.findAll({
+    //       include: ["employees"],
+    //       where: { id: id },
+    //     })
+    //       .then((data) => {
+    //         if (data === null) {
+    //           res.status(500).send({
+    //             message: "No Employees for department id=" + id + " yet.",
+    //           });
+    //         }
+    //         res.send(data);
+    //         // res.send(data[0]["employees"]);
+    //         // console.log(data);
+    //       })
+    //       .catch((err) => {
+    //         res.status(500).send({
+    //           message:
+    //             "Error retrieving employees for department with id=" +
+    //             id +
+    //             " " +
+    //             err,
+    //         });
+    //       });
+    //   } else {
+    //     res.send({ message: "Enter a numerical value as the ID" });
+    //   }
+    // };
+
+    //OPTION 2
+    Department.findByPk(id)
+      .then((data) => {
+        if (data === null) {
+          res.status(500).send({
+            message: "No Department with id=" + id + " yet.",
+          });
+        }
+        Employee.findAll({
+          where: { department_id: id },
+        })
+          .then((data2) => {
+            if (data2 === null) {
+              res.status(500).send({
+                message: "No Employees for department id=" + id + " yet.",
+              });
+            }
+            res.send(data2);
+          })
+          .catch((err) => {
+            res.status(500).send({
+              message:
+                "Error retrieving employees for department with id=" +
+                id +
+                " " +
+                err,
+            });
+          });
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: "Error retrieving Department with id=" + id + err,
+        });
+      });
+  } else {
+    res.send({ message: "Enter a numerical value as the ID" });
+  }
 };

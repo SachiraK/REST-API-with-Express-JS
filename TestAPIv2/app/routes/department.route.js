@@ -3,22 +3,25 @@ module.exports = (app) => {
 
   let router = require("express").Router();
 
-  // Create a new Tutorial
+  // Create a new department
   router.post("/", department.createDepartment);
 
-  // Retrieve all department
+  // Retrieve all departments
   router.get("/", department.findAllDepartment);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve a single department with id
   router.get("/:id", department.findOneDepartment);
 
-  // Update a Tutorial with id
+  // Retrieve all employees for a single department with id
+  router.get("/:id/employees", department.findEmployeeForDepartment);
+
+  // Update a department with id
   router.put("/:id", department.updateDepartment);
 
-  // Delete a Tutorial with id
+  // Delete a department with id
   router.delete("/:id", department.deleteDepartment);
 
-  // Delete all department
+  // Delete all departments
   router.delete("/", department.deleteAllDepartment);
 
   app.use("/api/department", router);
