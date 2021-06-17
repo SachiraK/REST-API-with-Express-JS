@@ -16,8 +16,6 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const { dbEmployee, dbDepartment } = require("./app/config/db.config");
-
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to testAPIv2 application." });
