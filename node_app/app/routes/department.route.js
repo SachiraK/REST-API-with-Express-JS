@@ -9,6 +9,8 @@ module.exports = (app) => {
 
   router.get("/:id", department.findOneDepartment);
 
+  router.get("/:id/employees", department.findAllEmployeesForDepartment);
+
   router.put("/:id", department.updateDepartment);
 
   router.delete("/:id", department.deleteDepartment);

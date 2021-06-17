@@ -88,10 +88,33 @@ exports.findOneDepartment = (req, res) => {
   }
 };
 
+exports.findAllEmployeesForDepartment = (req, res) => {
+    if (validate.isInteger(parseInt(req.params.id))){
+        const id = req.params.id;
+
+        Department.findAll({
+            include:["employees"],
+            where: {department_id : id},
+        })
+        .then((data) => {
+            if (data === null){res.status(500).send(
+                {message: `No employees for the department with ID ${id}`} 
+            );
+        }
+        res.send(data);
+        })
+        .catch((err) => {
+            res.status(500).send(
+                {message: `Error retrieving employees for department with ID ${id}`}
+            );
+        });
+    }else{res.send({
+        message: "Enter valid ID"
+    });}
+};
+
 exports.updateDepartment = (req, res) => {
-  // if (validate.isEmpty(req.params.id)) {
-  //   res.send({ message: "Enter the Employee ID you want to update" });
-  // } else {
+
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
     if (
@@ -101,7 +124,7 @@ exports.updateDepartment = (req, res) => {
       req.body.nic.slice(-1).toLowerCase() === "v"
     ) {
       Department.update(req.body, {
-        where: { id: id },
+        where: { department_id: id },
       })
         .then((num) => {
           if (num == 1) {
