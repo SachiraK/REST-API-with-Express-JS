@@ -1,2 +1,2 @@
-# ADL_Project
-Building a sample REST API using SQL and express node. - Sample Sachira
+# Building a REST API
+REST API with Express JS, Sequelize, validate.js, CORS and MySQL.
