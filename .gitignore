@@ -1,5 +1,5 @@
 #Ignore TwoTables
-.TwoTables
+./TwoTables
 
 #Ignore .env file
-.TestAPIv2/.env
+./TestAPIv2/.env
