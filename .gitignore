@@ -1,5 +1,7 @@
 #Ignore TwoTables
 TwoTables/
+TestAPI/
+sample/
 
 #Ignore .env file
 .TestAPIv2/.env
