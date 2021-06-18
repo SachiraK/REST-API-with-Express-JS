@@ -35,7 +35,6 @@ db.departments.hasMany(db.employees, {
   sourceKey: "id",
 });
 db.employees.belongsTo(db.departments, {
-  // as: "departments",
   foreignKey: "department_id",
   targetKey: "id",
 });

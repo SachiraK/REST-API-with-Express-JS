@@ -34,7 +34,7 @@ exports.createEmployee = (req, res) => {
       nic: req.body.nic,
     };
 
-    // Save Tutorial in the database
+    // Save Employee in the database
     Employee.create(employee)
       .then((data) => {
         res.send(data);
@@ -69,7 +69,7 @@ exports.createDepartment = (req, res) => {
       departmentName: req.body.departmentName,
     };
 
-    // Save Tutorial in the database
+    // Save Department in the database
     Department.create(department)
       .then((data) => {
         res.send(data);
@@ -94,10 +94,10 @@ exports.findAllEmployee = (req, res) => {
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
   Employee.findAll({
     include: [{ model: Department, attributes: ["departmentName"] }],
+    // include:[{model: Department}], //Gives all the details about the department of that employee
     where: condition,
   })
     .then((data) => {
-      // res.send(data);
       res.send(data);
     })
     .catch((err) => {
@@ -113,7 +113,6 @@ exports.findAllDepartment = (req, res) => {
   let condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
   Department.findAll({
-    // include: ["employees"],
     where: condition,
   })
     .then((data) => {
@@ -176,40 +175,21 @@ exports.findOneDepartment = (req, res) => {
 exports.updateEmployee = (req, res) => {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
-    // if (
-    //   validate.isEmpty(req.body.name) ||
-    //   validate.isEmpty(req.body.department_id) ||
-    //   validate.isEmpty(req.body.nic)
-    // ) {
-    //   res.status(400).send({
-    //     message: "One or more field/fields is/are missing!",
-    //   });
-    //   return;
-    // }
-    if (
-      validate.isString(req.body.name) &&
-      validate.isInteger(req.body.department_id) &&
-      validate.isString(req.body.nic) &&
-      req.body.nic.slice(-1).toLowerCase() === "v"
-    ) {
-      Employee.update(req.body, {
-        where: { employees_id: id },
-      })
-        .then((num) => {
-          if (num == 1) {
-            res.send({
-              message: "Employee details were updated successfully.",
-            });
-          }
-        })
-        .catch((err) => {
-          res.status(500).send({
-            message: "Error updating Employee with id=" + id + " " + err,
+    Employee.update(req.body, {
+      where: { employees_id: id },
+    })
+      .then((num) => {
+        if (num == 1) {
+          res.send({
+            message: "Employee details were updated successfully.",
           });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: "Error updating Employee with id=" + id + " " + err,
         });
-    } else {
-      res.send({ message: "Follow the body validation" });
-    }
+      });
   } else {
     res.send({ message: "ID should be a Number!" });
   }
@@ -220,7 +200,7 @@ exports.updateDepartment = (req, res) => {
     const id = req.params.id;
     if (validate.isEmpty(req.body.departmentName)) {
       res.status(400).send({
-        message: "One or more field/fields is/are missing!",
+        message: "Enter the new Department name",
       });
       return;
     }
@@ -241,18 +221,16 @@ exports.updateDepartment = (req, res) => {
           });
         });
     } else {
-      res.send({ message: "Follow the body validation" });
+      res.send({ message: "Update body is empty" });
     }
   } else {
     res.send({ message: "ID should be a Number!" });
-    // }
   }
 };
 
 exports.deleteEmployee = (req, res) => {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
-    console.log(req.params.id);
     Employee.destroy({
       where: { employees_id: id },
     })
@@ -269,7 +247,7 @@ exports.deleteEmployee = (req, res) => {
       })
       .catch((err) => {
         res.status(500).send({
-          message: "Could not delete Employee with id=" + id + " " + err,
+          message: "Could not delete Employee with id=" + id,
         });
       });
   } else {
@@ -331,7 +309,7 @@ exports.deleteAllDepartment = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all Employees.",
+          err.message || "Some error occurred while removing all Departments.",
       });
     });
 };
@@ -339,68 +317,20 @@ exports.deleteAllDepartment = (req, res) => {
 exports.findEmployeeForDepartment = (req, res) => {
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
-
-    //     //OPTION 1
-    //     Department.findAll({
-    //       include: ["employees"],
-    //       where: { id: id },
-    //     })
-    //       .then((data) => {
-    //         if (data === null) {
-    //           res.status(500).send({
-    //             message: "No Employees for department id=" + id + " yet.",
-    //           });
-    //         }
-    //         res.send(data);
-    //         // res.send(data[0]["employees"]);
-    //         // console.log(data);
-    //       })
-    //       .catch((err) => {
-    //         res.status(500).send({
-    //           message:
-    //             "Error retrieving employees for department with id=" +
-    //             id +
-    //             " " +
-    //             err,
-    //         });
-    //       });
-    //   } else {
-    //     res.send({ message: "Enter a numerical value as the ID" });
-    //   }
-    // };
-
-    //OPTION 2
-    Department.findByPk(id)
-      .then((data) => {
-        if (data === null) {
+    Employee.findAll({
+      where: { department_id: id },
+    })
+      .then((employee_data) => {
+        if (employee_data === null) {
           res.status(500).send({
-            message: "No Department with id=" + id + " yet.",
+            message: "No Employees for department id=" + id + " yet.",
           });
         }
-        Employee.findAll({
-          where: { department_id: id },
-        })
-          .then((data2) => {
-            if (data2 === null) {
-              res.status(500).send({
-                message: "No Employees for department id=" + id + " yet.",
-              });
-            }
-            res.send(data2);
-          })
-          .catch((err) => {
-            res.status(500).send({
-              message:
-                "Error retrieving employees for department with id=" +
-                id +
-                " " +
-                err,
-            });
-          });
+        res.send(employee_data);
       })
       .catch((err) => {
         res.status(500).send({
-          message: "Error retrieving Department with id=" + id + err,
+          message: "Error retrieving employees for department with id=" + id,
         });
       });
   } else {

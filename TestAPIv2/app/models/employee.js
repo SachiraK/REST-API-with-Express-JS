@@ -18,11 +18,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         required: true,
       },
-      created_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      updated_at: Sequelize.DATE,
       department_id: {
         type: Sequelize.INTEGER,
       },
