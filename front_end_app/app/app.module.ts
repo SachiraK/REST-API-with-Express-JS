@@ -9,13 +9,19 @@ import { DepartmentsListComponent } from './components/departments-list/departme
 
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { AddEmployeeComponent } from './components/add-employee/add-employee.component';
+import { EmployeeDetailsComponent } from './components/employee-details/employee-details.component';
+import { EmployeesListComponent } from './components/employees-list/employees-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddDepartmentComponent,
     DepartmentDetailsComponent,
-    DepartmentsListComponent
+    DepartmentsListComponent,
+    AddEmployeeComponent,
+    EmployeeDetailsComponent,
+    EmployeesListComponent
   ],
   imports: [
     BrowserModule,
