@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "departmentName": "BOSS",
+        "createdAt": "2021-06-18T09:00:37.000Z",
+        "updatedAt": "2021-06-18T09:00:37.000Z"
+    },
+    {
+        "id": 2,
+        "departmentName": "HR",
+        "createdAt": "2021-06-18T09:00:42.000Z",
+        "updatedAt": "2021-06-18T09:00:42.000Z"
+    },
+    {
+        "id": 3,
+        "departmentName": "Telco",
+        "createdAt": "2021-06-18T09:00:49.000Z",
+        "updatedAt": "2021-06-18T09:00:49.000Z"
+    },
+    {
+        "id": 4,
+        "departmentName": "Data",
+        "createdAt": "2021-06-18T09:00:53.000Z",
+        "updatedAt": "2021-06-18T09:00:53.000Z"
+    },
+    {
+        "id": 5,
+        "departmentName": "IoT",
+        "createdAt": "2021-06-18T09:00:59.000Z",
+        "updatedAt": "2021-06-18T09:00:59.000Z"
+    }
+]

@@ -1,0 +1,16 @@
+<!-- <p>add-department works!</p> -->
+<div *ngIf="!submitted">
+  <form class="form">
+    <h2>Create a Department</h2>
+    <p type="Name:"><input type="text" id="departmentName" required [(ngModel)]="department.departmentName" name="departmentName" placeholder="Enter the department name.."/></p>
+    <!-- <p type="Email:"><input placeholder="Let us know how to contact you back.."/></p> -->
+    <!-- <p type="Message:"><input placeholder="What would you like to tell us.."/></p> -->
+    <button (click)="saveDepartment()">Register</button>
+  </form>
+</div>
+
+<div *ngIf="submitted">
+  <h4>Department was submitted successfully!</h4>
+  <button class="" (click)="newDepartment()">Add</button>
+  <button class="" (click)="goToViewDept()">Back</button>
+</div>

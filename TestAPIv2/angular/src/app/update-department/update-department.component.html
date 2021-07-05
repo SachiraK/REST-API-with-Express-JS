@@ -1,0 +1,24 @@
+<!-- <p>update-department works!</p> -->
+<br><br>
+<div class="submit-form">
+    <div *ngIf="!submitted">
+      <div class="form-group">
+        <label for="departmentName">Department Name </label>
+        <input
+          type="text"
+          class="form-control"
+          id="departmentName"
+          required
+          [(ngModel)]="department.departmentName"
+          name="departmentName"
+        />
+      </div>
+  
+      <button (click)="update()" class="btn btn-success">Update</button>
+    </div>
+  
+    <div *ngIf="submitted">
+      <h3>Department was updated successfully!</h3>
+      <!-- <button class="btn btn-success" (click)="newDepartment()">Update Again</button> -->
+    </div>
+</div>
