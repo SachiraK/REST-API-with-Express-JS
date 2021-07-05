@@ -196,6 +196,7 @@ exports.updateEmployee = (req, res) => {
 };
 
 exports.updateDepartment = (req, res) => {
+  console.log(req.params.id);
   if (validate.isInteger(parseInt(req.params.id))) {
     const id = req.params.id;
     if (validate.isEmpty(req.body.departmentName)) {
@@ -204,7 +205,7 @@ exports.updateDepartment = (req, res) => {
       });
       return;
     }
-    if (validate.isString(req.body.department)) {
+    if (validate.isString(req.body.departmentName)) {
       Department.update(req.body, {
         where: { id: id },
       })
