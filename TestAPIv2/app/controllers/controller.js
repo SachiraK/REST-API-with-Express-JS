@@ -23,7 +23,7 @@ exports.createEmployee = (req, res) => {
   //Register an Employee
   if (
     validate.isString(req.body.name) &&
-    validate.isInteger(req.body.department_id) &&
+    validate.isString(req.body.department_id) &&
     validate.isString(req.body.nic) &&
     req.body.nic.slice(-1).toLowerCase() === "v"
   ) {
